@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
       react(),
       tailwindcss(),
     ],
-    base: '/axiforce-markets/',
+    base: '/',
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
