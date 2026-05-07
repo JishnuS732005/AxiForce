@@ -24,7 +24,14 @@ export default function WithdrawalPanel() {
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-white">{wd.status} Withdrawal</h3>
-                <p className="text-xs text-zinc-500">{wd.date}</p>
+                <p className="text-xs text-zinc-500">
+                  Expected withdrawal on{" "}
+                  {new Date().toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
               </div>
             </div>
             <div className="text-right">
@@ -41,22 +48,68 @@ export default function WithdrawalPanel() {
             <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">Bank Wire</span>
           </div>
 
-          {wd.status === 'Pending' && (
-            <div className="mt-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-medium text-amber-500 uppercase">{wd.statusText}</span>
-                <span className="text-xs font-bold text-white">{wd.progress}%</span>
-              </div>
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${wd.progress}%` }}
-                  transition={{ duration: 1, delay: 0.5 }}
-                  className="h-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]"
-                />
-              </div>
-            </div>
-          )}
+      {wd.status === 'Pending' && (
+        <div className="mt-6">
+    
+          <div className="flex items-center justify-between mb-5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">
+              Withdrawal Status
+            </span>
+
+            <span className="text-sm font-bold text-white">
+              {wd.progress}% Bank Approved
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between relative">
+
+            {[
+              "Requested",
+              "AML Review",
+              "Bank Approved",
+              "Processing",
+              "Completed",
+            ].map((step, idx) => {
+
+              const currentStep =
+                wd.progress >= 100 ? 4 :
+                wd.progress >= 90 ? 3 :
+                wd.progress >= 70 ? 2 :
+                wd.progress >= 40 ? 1 : 0;
+
+              return (
+                <div key={idx} className="flex-1 relative text-center">
+
+                  {idx !== 4 && (
+                    <div
+                      className={`absolute top-4 left-1/2 w-full h-1 ${
+                        idx < currentStep
+                          ? "bg-amber-500"
+                          : "bg-zinc-700"
+                      }`}
+                    />
+                  )}
+
+                  <div
+                    className={`relative z-10 mx-auto flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                      idx <= currentStep
+                        ? "bg-amber-500 text-black"
+                        : "bg-zinc-700 text-zinc-400"
+                    }`}
+                  >
+                    ✓
+                  </div>
+
+                  <p className="mt-3 text-[10px] text-zinc-400">
+                    {step}
+                  </p>
+
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
         </motion.div>
       ))}
     </div>
